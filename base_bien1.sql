@@ -74,6 +74,7 @@ CREATE TABLE RECEPCIONISTA (
 CREATE TABLE ESPECIALIDAD (
 	id_especialidad INT IDENTITY(1,1) NOT NULL PRIMARY KEY ,
 	costo MONEY NOT NULL,
+	descripcion NVARCHAR(20)
 );
 
 CREATE TABLE DOCTOR (
@@ -110,42 +111,42 @@ CREATE TABLE FARMACEUTICO(
 
 CREATE TABLE MEDICAMENTO(
 	id_medicamento INT IDENTITY (1,1) NOT NULL PRIMARY KEY,
-	nom_med NVARCHAR(50),
-	costo_med money,
-	cantidad INT,
-	descripcion NVARCHAR(50),
+	nom_med NVARCHAR(50) not null,
+	costo_med money not null,
+	cantidad INT not null,
+	descripcion NVARCHAR(50) not null,
 );
 
 CREATE TABLE SERVICIO(
 	id_servicio INT IDENTITY (1,1) NOT NULL PRIMARY KEY,
-	costo money,
-	Tipo_Servicio INT,
-	Descripcion_serv NVARCHAR(50)
+	costo money not null,
+	Tipo_Servicio INT not null,
+	Descripcion_serv NVARCHAR(50) not null
 );
 
 CREATE TABLE TICKET(
 	id_ticket INT IDENTITY (1,1) NOT NULL PRIMARY KEY,
-	cant_serv INT,
-	cant_med INT,
-	Fecha_Hora DATETIME,
-	id_servicio INT,
+	cant_serv INT not null,
+	cant_med INT not null,
+	Fecha_Hora DATETIME not null,
+	id_servicio INT not null,
 	CONSTRAINT FK_SERVICIO_TICKET FOREIGN KEY(id_servicio) 
     REFERENCES SERVICIO (id_servicio),
-	id_medicamento INT,
+	id_medicamento INT not null,
 	CONSTRAINT FK_MEDICAMENTO_TICKET FOREIGN KEY(id_medicamento) 
     REFERENCES MEDICAMENTO (id_medicamento),
-	id_farmaceutico INT,
-	CONSTRAINT FK_FARMACEUTICO_TICKET FOREIGN KEY(id_farmaceutico) 
-    REFERENCES FARMACEUTICO (id_farmaceutico),
 );
 
 CREATE TABLE PAGO_FARMACIA(
 	folio INT IDENTITY (1,1)NOT NULL PRIMARY KEY,
-	total money,
-	estatuts BIT,
-	id_ticket INT,
+	total money not null,
+	estatuts BIT not null,
+	id_ticket INT not null,
 	CONSTRAINT FK_TICKET_PAGO_FARMACIA FOREIGN KEY(id_ticket) 
     REFERENCES TICKET (id_ticket),
+	id_farmaceutico INT not null,
+	CONSTRAINT FK_FARMACEUTICO_PAGO FOREIGN KEY(id_farmaceutico) 
+    REFERENCES FARMACEUTICO (id_farmaceutico),
 );
 
 CREATE TABLE ESTATUS_CITA (
@@ -156,42 +157,53 @@ CREATE TABLE ESTATUS_CITA (
 
 CREATE TABLE CITA(
 	folio INT IDENTITY (1,1) NOT NULL PRIMARY KEY,
-	fecha_ag DATE,
-	Hora_ag TIME,
-	fecha DATE,
-	hora TIME,
-	id_estatus INT,
+	fecha_ag DATE not null,
+	Hora_ag TIME not null,
+	fecha DATE not null,
+	hora TIME not null,
+	id_estatus INT not null,
 	CONSTRAINT FK_CITA_ESTATUS FOREIGN KEY(id_estatus) 
     REFERENCES ESTATUS_CITA (id_estatus),
-	id_paciente INT,
+	id_paciente INT not null,
 	CONSTRAINT FK_PACIENTE_ESTATUS FOREIGN KEY(id_paciente) 
     REFERENCES PACIENTE (id_paciente),
 );
 
 CREATE TABLE RECETA (
 	id_receta INT IDENTITY (1,1) not null PRIMARY KEY,
-	observacion NVARCHAR(50),
-	diagnostico NVARCHAR(50),
-	tratamiento NVARCHAR(50),
-	folio INT,
+	observacion NVARCHAR(50) not null,
+	diagnostico NVARCHAR(50) not null,
+	tratamiento NVARCHAR(50) not null,
+	folio INT not null,
 	CONSTRAINT FK_CITA_RECETA FOREIGN KEY(folio) 
     REFERENCES CITA (folio),
-
+	id_medicamento INT not null,
+	CONSTRAINT FK_MEDICAMENTO_RECETA FOREIGN KEY(id_medicamento) 
+    REFERENCES MEDICAMENTO (id_medicamento),
 );
 
 CREATE TABLE PAGO(
 	id_pago INT IDENTITY(1,1) NOT NULL PRIMARY KEY ,
-	monto_dev MONEY ,
-	SI_NO_POL_CANC BIT,
+	monto_dev MONEY not null,
+	SI_NO_POL_CANC BIT not null,
 );
 
 CREATE TABLE COMPROBANTE (
 	id_comprobante INT IDENTITY(1,1) NOT NULL PRIMARY KEY ,
-	fecha datetime,
-	id_pago INT,
+	fecha datetime not null,
+	id_pago INT not null,
 	CONSTRAINT FK_COMPROBANTE_PAGO FOREIGN KEY(id_pago) 
     REFERENCES PAGO (id_pago),
-	folio INT,
+	folio INT not null,
 	CONSTRAINT FK_CITA_COMPORBANTE FOREIGN KEY(folio) 
     REFERENCES CITA (folio),
 );
+
+CREATE TABLE BITACORA(
+	id_historial INT IDENTITY(1,1) NOT NULL PRIMARY KEY ,
+	fecha date not null,
+	hora time not null,
+	tipo_mov int not null,
+	estatus bit
+);
+
