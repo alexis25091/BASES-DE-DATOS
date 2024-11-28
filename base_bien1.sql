@@ -54,6 +54,7 @@ CREATE TABLE TIPO_EMPLEADO(
 CREATE TABLE EMPLEADO(
     id_empleado INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
     id_tipoemp INT not null,
+	estatus_emp bit not null,
     CONSTRAINT FK_EMPLEADO_TIPOEMP FOREIGN KEY(id_tipoemp) 
     REFERENCES TIPO_EMPLEADO (id_tipoemp),
     id_jornada INT not null,
@@ -206,4 +207,3 @@ CREATE TABLE BITACORA(
 	tipo_mov int not null,
 	estatus bit
 );
-
